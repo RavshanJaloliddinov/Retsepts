@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CategoryModule } from './category/category.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig } from './config';
-import { dbConfig } from './config/database.config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Category } from './category/models';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CategoryModule } from './modules';
+import { appConfig, dbConfig } from './config';
+import { Category } from './modules';
+import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     CategoryModule,
@@ -35,9 +34,12 @@ import { Category } from './category/models';
           console.log(error)
         }
       }
-    })
+    }),
+    CategoryModule,
+    UserModule
   ],
   controllers: [],
   providers: [],
 })
+
 export class AppModule {}
