@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CategoryModule } from './modules';
 import { appConfig, dbConfig } from './config';
-import { Category } from './modules';
-import { UserModule } from './modules/user/user.module';
+import { Category, UserModule, FoodModule, CategoryModule, User, Food } from './modules';
+
 @Module({
   imports: [
     CategoryModule,
@@ -24,7 +23,7 @@ import { UserModule } from './modules/user/user.module';
             username: config.get('database.user'),
             password: config.get('database.password'),
             database: config.get('database.dbName'),
-            models: [Category],
+            models: [Category, User, Food],
             synchronize: true,
             // sync: {force: true},
             logging: console.log,
@@ -36,7 +35,8 @@ import { UserModule } from './modules/user/user.module';
       }
     }),
     CategoryModule,
-    UserModule
+    UserModule,
+    FoodModule,
   ],
   controllers: [],
   providers: [],
