@@ -1,16 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserRequest } from './interfaces';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
+import * as path from 'path';
 
 @Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UserController { 
+  constructor(private readonly userService: UserService) { }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  @UseInterceptors(FileInterceptor('image', {
+    dest: './uploads',
+    storage: multer.diskStorage({
+      destination(req, file, callback) {
+        return callback(null, "./uploads")
+      },
+      filename: function (req, file, cb) {
+        const extName = path.extname(file.originalname)
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.round(Math.random() * 1E9))
+        cb(null, file.filename + '-' + uniqueSuffix + extName)
+      }
+    })
+  }))
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<void> {
+    await this.userService.createUser({
+      ...createUserDto,
+      image: image.filename
+    });
   }
 
   @Get()
@@ -25,7 +46,7 @@ export class UserController {
 
   @Patch('/:userId')
   updateUser(@Param('userId', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserRequest) {
-    return this.userService.updateUser(+id, updateUserDto);
+    return this.userService.updateUser(id, updateUserDto);
   }
 
   @Delete('/:userId')

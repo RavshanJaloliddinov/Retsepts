@@ -3,13 +3,17 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { appConfig, dbConfig } from './config';
 import { Category, UserModule, FoodModule, CategoryModule, User, Food } from './modules';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
 @Module({
   imports: [
     CategoryModule,
     ConfigModule.forRoot({
       isGlobal: true, 
       load: [appConfig, dbConfig]
+    }),
+    ServeStaticModule.forRoot({
+      serveRoot: "/uploads",
+      rootPath: "uploads"
     }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],

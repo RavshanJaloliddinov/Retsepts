@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Category } from "src/modules/category";
 
 export enum UserRoles {
     user = 'USER',
@@ -26,7 +27,7 @@ export class User extends Model {
     phone: string
 
     @Column({
-        type: DataType.ENUM, 
+        type: DataType.ENUM,
         values: [UserRoles.admin, UserRoles.user],
         defaultValue: UserRoles.user,
         allowNull: false
@@ -34,4 +35,11 @@ export class User extends Model {
 
     @Column({ type: DataType.TEXT })
     password: string
+
+    @ForeignKey(() => Category)
+    @Column({ type: DataType.INTEGER, allowNull: false, onDelete: 'CASCADE', onUpdate: 'NO ACTION' })
+    category_id: number
+
+    @BelongsTo(() => Category)
+    category: Category
 }

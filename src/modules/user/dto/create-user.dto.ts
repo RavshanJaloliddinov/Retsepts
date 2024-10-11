@@ -1,24 +1,22 @@
 import {
-    IsDate, 
-    IsNotEmpty, 
-    IsString, 
-    IsEmail, 
-    IsPhoneNumber, 
-    IsEnum, 
+    IsDate,
+    IsNotEmpty,
+    IsString,
+    IsEmail,
+    IsPhoneNumber,
+    IsEnum,
     IsOptional,
 } from "class-validator"
 import { UserRoles } from "../models"
 
 
-export class CreateUserDto implements CreateUserDto {
+export class CreateUserDto implements Omit<CreateUserDto, 'image'> {
 
     @IsString()
     @IsNotEmpty()
     fullName: string
 
-    @IsString()
-    @IsOptional()
-    image?: string
+    image?: any
 
     @IsDate()
     experience?: string

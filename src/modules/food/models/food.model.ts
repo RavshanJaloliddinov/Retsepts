@@ -1,8 +1,9 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Category } from "src/modules/category";
 
 @Table({ tableName: 'food', timestamps: true })
 export class Food extends Model {
-    
+
     @Column({
         type: DataType.INTEGER,
         autoIncrement: true,
@@ -21,12 +22,6 @@ export class Food extends Model {
         allowNull: false,
     })
     creator_id: number
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    category_id: number
 
     @Column({
         type: DataType.TEXT,
@@ -54,13 +49,25 @@ export class Food extends Model {
 
     @Column({
         type: DataType.BOOLEAN,
-        allowNull: false, 
+        allowNull: false,
     })
     is_passed: boolean
 
     @Column({
         type: DataType.DECIMAL(3, 2),
-        allowNull: false, 
+        allowNull: false,
     })
     rating: string
+
+    @ForeignKey(() => Category)
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: "NO ACTION"
+    })
+    category_id: number
+
+    @BelongsTo(() => Category)
+    category: Category
 }
