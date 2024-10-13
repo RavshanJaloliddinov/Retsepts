@@ -5,25 +5,14 @@ import { UpdateUserRequest } from './interfaces';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import * as path from 'path';
+import { multerConfig } from 'src/config/multer.config';
 
 @Controller('user')
 export class UserController { 
   constructor(private readonly userService: UserService) { }
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', {
-    dest: './uploads',
-    storage: multer.diskStorage({
-      destination(req, file, callback) {
-        return callback(null, "./uploads")
-      },
-      filename: function (req, file, cb) {
-        const extName = path.extname(file.originalname)
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.round(Math.random() * 1E9))
-        cb(null, file.filename + '-' + uniqueSuffix + extName)
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   async createUser(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() image: Express.Multer.File,
