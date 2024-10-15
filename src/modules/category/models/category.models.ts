@@ -4,10 +4,10 @@ import { Food } from "src/modules/food";
 @Table({ tableName: 'Categories', timestamps: true })
 export class Category extends Model {
 
-    @Column({ type: DataType.INTEGER, primaryKey: true, allowNull: false })
+    @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
     id: number
 
-    @Column({ type: DataType.STRING, primaryKey: true })
+    @Column({ type: DataType.STRING, unique: true })
     name: string
 
     @HasMany(() => Food)

@@ -1,5 +1,6 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Category } from "src/modules/category";
+import { User } from "src/modules/user";
 
 @Table({ tableName: 'food', timestamps: true })
 export class Food extends Model {
@@ -16,12 +17,6 @@ export class Food extends Model {
         allowNull: false,
     })
     title: string
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    creator_id: number
 
     @Column({
         type: DataType.TEXT,
@@ -50,12 +45,14 @@ export class Food extends Model {
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
+        defaultValue: false
     })
     is_passed: boolean
 
     @Column({
-        type: DataType.DECIMAL(3, 2),
+        type: DataType.DECIMAL(2, 1),
         allowNull: false,
+        defaultValue: 2.1
     })
     rating: string
 
@@ -67,7 +64,16 @@ export class Food extends Model {
         onUpdate: "NO ACTION"
     })
     category_id: number
-
-    @BelongsTo(() => Category)
-    category: Category
+    
+    @ForeignKey(() => User)
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: "NO ACTION"
+    })
+    creator_id: number;
+  
+    @BelongsTo(() => User, 'creator_id')
+    creator: User;
 }

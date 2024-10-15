@@ -1,9 +1,10 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Category } from "src/modules/category";
+import { Food } from "src/modules/food";
 
 export enum UserRoles {
-    user = 'USER',
-    admin = 'ADMIN',
+    user = 'user',
+    admin = 'admin',
 }
 @Table({ tableName: 'user', timestamps: true })
 export class User extends Model {
@@ -11,7 +12,7 @@ export class User extends Model {
     @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
     id: number
 
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.STRING, allowNull: false })
     fullName: string
 
     @Column({ type: DataType.STRING })
@@ -23,23 +24,15 @@ export class User extends Model {
     @Column({ type: DataType.STRING, unique: true, allowNull: false })
     email: string
 
-    @Column({ type: DataType.STRING, unique: true })
+    @Column({ type: DataType.STRING, unique: true, allowNull: false })
     phone: string
 
-    @Column({
-        type: DataType.ENUM,
-        values: [UserRoles.admin, UserRoles.user],
-        defaultValue: UserRoles.user,
-        allowNull: false
-    })
+    @Column({ type: DataType.ENUM('admin', 'user'), defaultValue: 'user' })
+    role: string
 
-    @Column({ type: DataType.TEXT })
+    @Column({ type: DataType.STRING })
     password: string
 
-    @ForeignKey(() => Category)
-    @Column({ type: DataType.INTEGER, allowNull: false, onDelete: 'CASCADE', onUpdate: 'NO ACTION' })
-    category_id: number
-
-    @BelongsTo(() => Category)
-    category: Category
+    @HasMany(() => Food, 'creator_id')
+    foods: Food[];
 }

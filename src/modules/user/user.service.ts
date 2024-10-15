@@ -3,15 +3,24 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models';
 import { UpdateUserRequest } from './interfaces/update-user.interface';
+import { UploadService } from '../upload/upload.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User) private userModel: typeof User) { }
+  #_uploadService: UploadService
+  constructor(@InjectModel(User) private userModel: typeof User, service: UploadService) { 
+    this.#_uploadService = service
+  }
 
   async createUser(payload: CreateUserDto): Promise<void> {
+    const imageOptions = await this.#_uploadService.uploadFile({
+      file: payload.image,
+      destination: 'uploads/users',
+    })
+
     await this.userModel.create({
       fullName: payload.fullName,
-      image: payload.image,
+      image: imageOptions,
       experience: payload.experience,
       email: payload.email,
       phone: payload.phone,
@@ -29,6 +38,10 @@ export class UserService {
   }
 
   async updateUser(id: number, payload: UpdateUserRequest) {
+    const imageOptions = await this.#_uploadService.uploadFile({
+      file: payload.image,
+      destination: 'uploads/users',
+    })
     return await this.userModel.update(
       {
         fullName: payload.fullName,

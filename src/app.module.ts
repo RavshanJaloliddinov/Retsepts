@@ -4,23 +4,35 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { appConfig, dbConfig } from './config';
 import { Category, UserModule, FoodModule, CategoryModule, User, Food } from './modules';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { UploadModule } from './modules/upload/upload.module';
+import { CheckAuthGuard } from './guards';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     CategoryModule,
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
       load: [appConfig, dbConfig]
     }),
     ServeStaticModule.forRoot({
       serveRoot: "/uploads",
       rootPath: "uploads"
     }),
+    JwtModule.register({
+      secret: 'my secret',
+      global: true,
+      signOptions: {
+        expiresIn: 60 * 15
+      }
+    }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         try {
-          return{
+          return {
             dialect: 'postgres',
             host: config.get("database.host"),
             port: config.get<number>("database.port"),
@@ -41,9 +53,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     CategoryModule,
     UserModule,
     FoodModule,
+    UploadModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      useClass: CheckAuthGuard,
+      provide: APP_GUARD
+    }
+  ],
 })
 
-export class AppModule {}
+export class AppModule { }

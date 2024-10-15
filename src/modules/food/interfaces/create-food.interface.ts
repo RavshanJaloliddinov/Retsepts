@@ -5,7 +5,5 @@ export declare interface CreateFoodRequest {
     receipt: string
     description: string
     cooking_time: string
-    video: string
-    is_passed: boolean
-    rating: string
+    video: Express.Multer.File
 }

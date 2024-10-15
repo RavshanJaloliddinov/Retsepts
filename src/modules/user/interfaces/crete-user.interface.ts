@@ -6,5 +6,6 @@ export declare interface CreateUserRequest {
     experience?: string,
     email: string,
     phone?: string,
-    role?: UserRoles
+    role?: UserRoles,
+    password: string,
 }

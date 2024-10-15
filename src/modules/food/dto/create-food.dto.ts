@@ -1,42 +1,66 @@
-import { IsBoolean, IsDecimal, IsNotEmpty, IsNumber, IsString, Min, Max } from "class-validator";
+import { IsNumber, IsString, IsNotEmpty } from "class-validator";
 import { CreateFoodRequest } from "../interfaces/create-food.interface";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateFoodDto implements CreateFoodRequest {
+    @ApiProperty({
+        type: 'string',
+        required: true,
+        example: 'Cheese burger'
+    })
     @IsString()
     @IsNotEmpty()
-    title: string
+    title: string;
 
+    @ApiProperty({
+        type: 'number',
+        required: true,
+        example: 1
+    })
     @IsNumber()
     @IsNotEmpty()
-    creator_id: number
+    creator_id: number;
 
+    @ApiProperty({
+        type: 'number',
+        required: true,
+        example: 1
+    })
     @IsNumber()
     @IsNotEmpty()
-    category_id: number
+    category_id: number;
 
+    @ApiProperty({
+        type: "string",
+        required: true,
+        example: "1 kg guruch, 1 kg sabzi, 1 dona piyoz"
+    })
     @IsString()
     @IsNotEmpty()
-    receipt: string
+    receipt: string;
 
+    @ApiProperty({
+        type: 'string',
+        required: true,
+        example: "osh pishirish"
+    })
     @IsString()
     @IsNotEmpty()
-    description: string
+    description: string;
 
+    @ApiProperty({
+        type: 'string',
+        required: true,
+        example: '2 soat'
+    })
     @IsString()
     @IsNotEmpty()
-    cooking_time: string
+    cooking_time: string;
 
-    @IsString()
-    @IsNotEmpty()
-    video: string
-
-    @IsBoolean()
-    @IsNotEmpty()
-    is_passed: boolean
-
-    @IsDecimal()
-    @IsNotEmpty()
-    @Min(0) 
-    @Max(5)
-    rating: string
+    @ApiProperty({
+        type: 'string',
+        format: 'binary',
+        required: true,
+    })
+    video: Express.Multer.File;
 }
