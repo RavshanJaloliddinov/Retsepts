@@ -9,14 +9,15 @@ import { Protected, Roles } from 'src/decarators';
 import { UserRoles } from './models';
 
 
-
+// @ApiBearerAuth()
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Protected(true)
-  @Roles([UserRoles.admin])
+  // Create food
+  // @Protected(true)
+  // @Roles([UserRoles.admin])
   @ApiConsumes('multipart/form-data')
   @Post()
   @UseInterceptors(FileInterceptor('image', multerConfig))
@@ -26,30 +27,29 @@ export class UserController {
   ): Promise<void> {
     await this.userService.createUser({
       ...createUserDto,
-      image: image.filename
+      image: image?.filename 
     });
   }
 
-  @ApiBearerAuth()
+  // Get all foods
   @Get()
-  @Protected(true)
-  @Roles([UserRoles.admin])
+  // @Protected(true)
+  // @Roles([UserRoles.admin])
   findAllUsers() {
     return this.userService.findAllUser();
   }
 
-  @ApiBearerAuth()
-  @Protected(true)
-  @Roles([UserRoles.admin])
+  // Get food by id
+  // @Protected(true)
+  // @Roles([UserRoles.admin])
   @Get('/:userId')
   findUserById(@Param('userId') id: string) {
     return this.userService.findOneUser(+id);
   }
 
-
-
-  @Protected(true)
-  @Roles([UserRoles.admin])
+  // Update user
+  // @Protected(true)
+  // @Roles([UserRoles.admin])
   @Patch('/:userId')
   @ApiConsumes('multipart/form-data') 
   @UseInterceptors(FileInterceptor('image', multerConfig))
@@ -66,8 +66,9 @@ export class UserController {
     await this.userService.updateUser(id, updateData);
   }
 
-  @Protected(true)
-  @Roles([UserRoles.admin])
+  // Delete user
+  // @Protected(true)
+  // @Roles([UserRoles.admin])
   @Delete('/:userId')
   deleteUser(@Param('userId', ParseIntPipe) userId: number) {
     return this.userService.deleteUser(userId);

@@ -13,10 +13,14 @@ export class UserService {
   }
 
   async createUser(payload: CreateUserDto): Promise<void> {
+
+    
     const imageOptions = await this.#_uploadService.uploadFile({
       file: payload.image,
       destination: 'uploads/users',
     })
+
+    
 
     await this.userModel.create({
       fullName: payload.fullName,
@@ -45,7 +49,7 @@ export class UserService {
     return await this.userModel.update(
       {
         fullName: payload.fullName,
-        image: payload.image,
+        image: imageOptions,
         expreince: payload.experience,
         email: payload.email,
         phone: payload.phone,

@@ -29,13 +29,14 @@ export class CreateUserDto implements Omit<CreateUserDto, 'image'> {
     @ApiProperty({
         type: String,
         format: 'binary',
-        required: true,
+        required: false
     })
     image?: any
 
     @ApiProperty({
         type: String,
         example: "12-12-2023",
+        required: false
     })
     @IsNotEmpty()
     @Type(() => Date)
@@ -54,6 +55,7 @@ export class CreateUserDto implements Omit<CreateUserDto, 'image'> {
     @ApiProperty({
         type: String,
         example: "+998904794006",
+        required: true
     })
     @IsOptional()
     @IsPhoneNumber('UZ')
@@ -62,7 +64,7 @@ export class CreateUserDto implements Omit<CreateUserDto, 'image'> {
     @ApiProperty({
         type: String,
         example: "user",
-        required: false
+        required: true
     })
     @IsOptional()
     @IsIn(['user', 'admin'])

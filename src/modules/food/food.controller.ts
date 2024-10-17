@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FoodService } from './food.service';
 import { CreateFoodDto } from './dto/create-food.dto';
@@ -8,12 +8,14 @@ import { Food } from './models';
 import { Protected, Roles } from 'src/decarators';
 import { UserRoles } from '../user';
 
+
 @ApiTags('Food')
 @Controller('food')
 export class FoodController {
   constructor(private readonly foodService: FoodService) { }
 
-
+  // Create food
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @Post()
   @Protected(true)
@@ -27,7 +29,7 @@ export class FoodController {
     return await this.foodService.createFood({ ...createFoodDto, video: file });
   }
 
-
+  // Get all food
   @Protected(true)
   @Roles([UserRoles.admin, UserRoles.user])
   @Get()
@@ -35,7 +37,7 @@ export class FoodController {
     return await this.foodService.findAllFood();
   }
 
-
+  // Get food by id
   @Protected(true)
   @Roles([UserRoles.admin, UserRoles.user])
   @Get(':foodId')
@@ -43,7 +45,8 @@ export class FoodController {
     return await this.foodService.findFoodById(foodId);
   }
 
-
+  // Update food
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @Protected(true)
   @Roles([UserRoles.admin, UserRoles.user])
@@ -52,7 +55,8 @@ export class FoodController {
     return await this.foodService.updateFood(foodId, updateFoodDto);
   }
 
-
+  // Delete food
+  @ApiBearerAuth()
   @Protected(true)
   @Roles([UserRoles.admin, UserRoles.user])
   @Delete(':foodId')
