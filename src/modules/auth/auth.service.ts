@@ -22,7 +22,7 @@ export class AuthService {
 
   async login(payload: LoginRequest): Promise<LoginResponse> {
     const foundedUser = await this.usermodel.findOne({
-      where: { email: payload.email, phone: payload.phone },
+      where: { email: payload.email, password: payload.password },
     });
 
     if (!foundedUser) {
@@ -35,8 +35,8 @@ export class AuthService {
         role: foundedUser.role,
       },
       {
-        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'),
       }
     );
 
@@ -46,8 +46,8 @@ export class AuthService {
         role: foundedUser.role,
       },
       {
-        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'),
       },
     );
 
@@ -59,7 +59,12 @@ export class AuthService {
   }
 
   async register(payload: RegisterRequest): Promise<RegisterResponse> {
-    const newUser = await this.usermodel.create({ fullName: payload.fullName, email: payload.email, phone: payload.phone });
+    const newUser = await this.usermodel.create(
+      {
+        fullName: payload.fullName,
+        email: payload.email,
+        password: payload.password
+      });
 
     const accessToken = await this.jwt.signAsync(
       {
@@ -67,8 +72,8 @@ export class AuthService {
         role: newUser.role,
       },
       {
-        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'),
       },
     );
 
@@ -78,8 +83,8 @@ export class AuthService {
         role: newUser.role,
       },
       {
-        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'),
       },
     );
 
@@ -94,7 +99,7 @@ export class AuthService {
 
   async refresh(payload: RefreshRequest): Promise<RefreshResponse> {
     try {
-      this.jwt.verify(payload.refreshToken, { secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY') }); 
+      this.jwt.verify(payload.refreshToken, { secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY') });
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         throw new UnprocessableEntityException("Token already expired");
@@ -119,8 +124,8 @@ export class AuthService {
         role: userDecodedData?.role,
       },
       {
-        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('ACCESS_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('ACCESS_TOKEN_SECRET_KEY'),
       },
     );
 
@@ -130,8 +135,8 @@ export class AuthService {
         role: userDecodedData?.role,
       },
       {
-        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'), 
-        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'), 
+        expiresIn: this.config.get<number>('REFRESH_TOKEN_EXPIRE_TIME'),
+        secret: this.config.get<string>('REFRESH_TOKEN_SECRET_KEY'),
       },
     );
 

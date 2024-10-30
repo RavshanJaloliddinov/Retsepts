@@ -1,6 +1,6 @@
 export declare interface LoginRequest {
     email: string;
-    phone: string;
+    password: string;
 }
 
 export declare interface LoginResponse {

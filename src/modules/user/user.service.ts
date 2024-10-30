@@ -16,7 +16,7 @@ export class UserService {
 
     
     const imageOptions = await this.#_uploadService.uploadFile({
-      file: payload.image,
+      file: payload.image, 
       destination: 'uploads/users',
     })
 

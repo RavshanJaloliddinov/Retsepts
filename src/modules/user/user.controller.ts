@@ -58,7 +58,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserRequest,
     @UploadedFile() image?: Express.Multer.File, 
   ): Promise<void> {
-    const updateData = {
+    const updateData = {  
       ...updateUserDto,
       image: image, 
     };

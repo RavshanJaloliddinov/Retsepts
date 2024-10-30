@@ -1,7 +1,7 @@
 export declare interface RegisterRequest {
     fullName: string;
     email: string;
-    phone: string;
+    password: string;
 }
 
 export declare interface RegisterResponse {
